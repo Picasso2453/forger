@@ -348,6 +348,12 @@ Run completed with a functional deployable MT5 Docker image. Post-completion net
 **Root Cause:** The contract path inside the task packet was written as `contracts/mt5_cli.md` (relative, no `.forger/` prefix). When the agent resolved this against its own location in `.forger/tasks/`, it produced the wrong path. The agent recovered by scanning the filesystem, but this wastes tokens and is fragile.
 **Fix needed:** In `cmd_orchestrate()`, verify that all embedded contract paths in generated task packets always begin with `.forger/contracts/`. Never write bare `contracts/` paths. The `embed_contract()` function should assert that contract_path starts with `.forger/`.
 
+### Bug 28: VSCode linters trigger infinite loop on language-specific contract filenames
+**Symptom:** PM agent repeatedly tries to fix `.forger/contracts/dockerfile.contract.md` in a loop. Kilo Code's dockerfile-utils linter parses the contract file as Dockerfile syntax, reports "Unknown instruction: -" for markdown bullet points, and returns errors. PM sees errors and retries the write indefinitely.
+**Root Cause:** Contract filenames that match language keywords (dockerfile, package.json, docker-compose.yml, etc.) trigger language-specific linters, which try to validate the `.md` file as source code. Markdown content (`- **Field:** value`) is not valid Dockerfile syntax.
+**Fix applied:** Changed contract naming pattern from `{filename}.contract.md` or bare `{filename}.md` to `contract_{filename}.md`. This prevents linter pattern matching. Updated PM.md Step 5 and FORBIDDEN examples. Added CRITICAL warning about linter interference.
+**Prevention:** All contract filenames now follow the pattern `.forger/contracts/contract_{filename}.md` (e.g., `contract_dockerfile.md`, `contract_package.json.md`). The `contract_` prefix is non-matching for all language linters. No linter will attempt to validate these files.
+
 ### Observation: Test evasion — agents pass tests by working around them
 **Symptom:** Agents made tests pass by adjusting assertions or mocking behavior rather than fixing the underlying implementation. This satisfies the "tests pass" criterion without satisfying the actual requirement.
 **Root Cause:** Agent objective is "make tests pass," which is satisfied by any means including test fixture manipulation. The anti-stub criterion in QA.md covers code stubs but not test manipulation.

@@ -77,7 +77,7 @@ Slice format in SLICES.md — CRITICAL: copy this format exactly, including fiel
 - Description: [What this slice implements — 1-3 sentences]
 - Inputs: [Files or data the DEV agent must read before implementing]
 - Outputs: [Exact files that will be created or modified]
-- Contracts: [Comma-separated list of contract file paths, e.g., .forger/contracts/users_service.md]
+- Contracts: [Comma-separated list of contract file paths, e.g., .forger/contracts/contract_users_service.md]
 - Tests: [Exact test command or precise manual verification steps]
 ```
 
@@ -114,7 +114,10 @@ Only chain slices when the dependency is real. If S3 does not actually import fr
 - ❌ `contracts/users_service.md` (missing `.forger/` prefix)
 - ❌ `forger/contracts/users_service.md` (wrong name, should be `.forger/`)
 - ❌ `users_service.md` (bare filename, no path)
-- ✅ `.forger/contracts/users_service.md` (correct — absolute from project root)
+- ❌ `.forger/contracts/dockerfile.md` (no `contract_` prefix — triggers linters)
+- ❌ `.forger/contracts/dockerfile.contract.md` (suffix pattern — triggers linters)
+- ✅ `.forger/contracts/contract_users_service.md` (correct — uses neutral naming to avoid linter interference)
+- ✅ `.forger/contracts/contract_dockerfile.md` (correct — prefix pattern blocks linter triggers)
 
 Contract paths must be fully qualified from project root starting with `.forger/contracts/`. Agents use these paths directly to read files; incorrect paths cause task packet generation to fail or agents to construct wrong file access paths.
 
@@ -122,7 +125,9 @@ Contract paths must be fully qualified from project root starting with `.forger/
 
 ## Step 5 — Create File Contracts
 
-Write one contract file in `.forger/contracts/` for **every output file** that a DEV agent will create or significantly modify. Contract files are named after the file they govern (e.g., `.forger/contracts/users_service.md` for `src/api/users_service.py`).
+Write one contract file in `.forger/contracts/` for **every output file** that a DEV agent will create or significantly modify. Contract files use a neutral naming pattern: prefix `contract_` to the filename (e.g., `.forger/contracts/contract_users_service.md` for `src/api/users_service.py`, or `.forger/contracts/contract_dockerfile.md` for `Dockerfile`). This prevents VSCode linters from trying to parse contract files as source code.
+
+**CRITICAL — Linter Interference Prevention:** If a contract filename matches a language keyword (e.g., `Dockerfile`, `package.json`, `docker-compose.yml`), VSCode linters will try to validate it as code, causing write errors and infinite loops. The `contract_` prefix solves this by making the filename non-matching. Always use the prefix pattern.
 
 Every contract must contain all 8 required fields. A contract missing any field is invalid and will fail the Auditor check.
 
