@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "forger-code"
+version = "0.1.0"
+description = "Documentation-first, disposable-agent workflow system for Kilo Code"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+keywords = ["ai", "agents", "workflow", "kilo-code", "vscode"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+]
+
+[project.scripts]
+forger = "forger_cli:main"
+
+[tool.setuptools]
+py-modules = ["forger_cli"]
+packages = ["forger_code"]
+
+[tool.setuptools.package-data]
+forger_code = ["data/**/*", "data/*"]
