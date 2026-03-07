@@ -572,15 +572,25 @@ def cmd_init(_: argparse.Namespace) -> None:
     else:
         print(f"Warning: modes source not found at {modes_src}")
 
-    # Copy prompts/ to forger/ so spawned agents can read role definitions
+    # Symlink prompts/ so spawned agents always read the latest role definitions from source
     prompts_src = FORGER_ROOT / "prompts"
     prompts_dst = FORGER_DIR / "prompts"
-    if prompts_src.exists() and prompts_src.resolve() != prompts_dst.resolve():
+    if prompts_src.exists():
         if not prompts_dst.exists():
-            shutil.copytree(prompts_src, prompts_dst)
-            print("Agent prompts copied: .forger/prompts/")
+            try:
+                # On Windows, symlinks may require admin; fall back to copy if needed
+                prompts_dst.symlink_to(prompts_src, target_is_directory=True)
+                print("Agent prompts symlinked: .forger/prompts/ -> source")
+            except (OSError, NotImplementedError):
+                # Fallback for systems without symlink support
+                shutil.copytree(prompts_src, prompts_dst)
+                print("Agent prompts copied: .forger/prompts/ (symlink unavailable on this system)")
         else:
-            print("Agent prompts already present: .forger/prompts/")
+            # If already exists, check if it's a symlink pointing to the right place
+            if prompts_dst.is_symlink() and prompts_dst.resolve() == prompts_src.resolve():
+                print("Agent prompts symlinked: .forger/prompts/ -> source")
+            else:
+                print("Agent prompts already present: .forger/prompts/")
 
     print(f"\nInitialized project at: {ROOT}")
     print("Workflow files: .forger/PROJECT.md, .forger/STATE.md, .forger/SLICES.md, ...")
