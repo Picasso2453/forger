@@ -129,7 +129,16 @@ Usage: `python forger_cli.py <command> [args]`
 
 ```bash
 pip install forger-code
-forger init    # Create project structure in current directory
+```
+
+Then initialize your project:
+
+```bash
+# Recommended (works on all systems):
+python -m forger_cli init
+
+# Or if you added Python Scripts to PATH:
+forger init
 ```
 
 ### Package Contents
@@ -160,6 +169,48 @@ forger_cli.py                   # CLI entry point (installed as `forger` command
 2. Creates `.kilocodemodes` from `custom_modes.yaml`
 3. Creates `.forger/prompts/` with all role instruction files
 4. Creates `.forger/PROJECT.md` template
+
+---
+
+## Troubleshooting
+
+### `forger` command not found
+
+**Recommended solution (works on all systems):**
+```bash
+python -m forger_cli init    # Instead of: forger init
+python -m forger_cli status  # Instead of: forger status
+```
+
+**If you want to use the `forger` command directly**, add Python Scripts to your PATH:
+
+**Windows PowerShell:**
+```powershell
+# Option 1: Add to current session only
+$env:PATH += ";$([System.Environment]::GetEnvironmentVariable('APPDATA'))\Python\Python314\Scripts"
+
+# Option 2: Add permanently (run as Administrator)
+[Environment]::SetEnvironmentVariable(
+  "PATH",
+  [Environment]::GetEnvironmentVariable("PATH", "User") + ";$([System.Environment]::GetEnvironmentVariable('APPDATA'))\Python\Python314\Scripts",
+  "User"
+)
+# Then restart PowerShell
+```
+
+**Linux/macOS:**
+```bash
+# Usually already on PATH, but if not:
+export PATH="$HOME/.local/bin:$PATH"
+```
+
+### Package installation fails
+
+If `pip install forger-code` fails, try:
+```bash
+pip install --upgrade pip setuptools wheel
+pip install forger-code
+```
 
 ---
 

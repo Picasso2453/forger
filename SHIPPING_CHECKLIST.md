@@ -22,7 +22,7 @@
 
 ### ⏳ Pre-Publication Tasks (Do These Now)
 
-- [ ] **Initialize Git Repository**
+- [x] **Initialize Git Repository**
   ```bash
   cd c:\projects\forger-ai-selfhosted
   git init
@@ -31,14 +31,14 @@
   ```
   **Time:** 2 min
 
-- [ ] **Create GitHub Repository** (if not already done)
+- [x] **Create GitHub Repository** (if not already done)
   - Go to https://github.com/new
   - Repository name: `forger-ai` (or similar)
   - Description: "Documentation-first, disposable-agent workflow system for AI-driven development"
   - License: MIT
   - **Time:** 5 min
 
-- [ ] **Push to GitHub**
+- [x] **Push to GitHub**
   ```bash
   git remote add origin https://github.com/YOUR-ORG/forger-ai.git
   git branch -M main

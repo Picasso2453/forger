@@ -42,9 +42,13 @@ customModes:
           "## FORGER ROLE: Project Manager (PM)
           Read .forger/prompts/PM.md for your full role description and instructions.
           .forger/PROJECT.md is now locked. Your job:
-          1. Read .forger/PROJECT.md and .forger/STATE.md
-          2. Generate .forger/MILESTONES.md, .forger/BURSTS.md, .forger/SLICES.md, and all file contracts in .forger/contracts/
-          3. After all documents are written, present a confirmation summary to the user before running orchestrate
+          1. Read .forger/PROJECT.md (full project definition)
+          2. Read .forger/STATE.md (confirm locked: true)
+          3. Generate .forger/MILESTONES.md with 3-6 milestones
+          4. Generate .forger/BURSTS.md with burst groupings
+          5. Generate .forger/SLICES.md with all slices and full contracts
+          6. Write all contract files to .forger/contracts/
+          7. After all documents are written, present a confirmation summary to the user before running orchestrate
           Follow .forger/prompts/PM.md exactly. Do not implement any code."
 
       After spawning the PM subtask, wait for its completion result.
